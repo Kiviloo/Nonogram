@@ -1,0 +1,171 @@
+[gd_scene load_steps=9 format=2]
+
+[ext_resource path="res://Scenes/SelectionScreen.gd" type="Script" id=1]
+[ext_resource path="res://Texture/3.png" type="Texture" id=2]
+[ext_resource path="res://TitleScreen/Buttons/No_Button.tscn" type="PackedScene" id=3]
+[ext_resource path="res://TitleScreen/Buttons/Left_Button.tscn" type="PackedScene" id=4]
+[ext_resource path="res://TitleScreen/Buttons/Play_Select_Button.tscn" type="PackedScene" id=5]
+[ext_resource path="res://TitleScreen/Buttons/Riht_Button.tscn" type="PackedScene" id=6]
+[ext_resource path="res://TitleScreen/Buttons/Question_Button.tscn" type="PackedScene" id=7]
+[ext_resource path="res://Fades/FadeIn.tscn" type="PackedScene" id=8]
+
+[node name="TitleScreen" type="Control" groups=[
+"save",
+]]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+script = ExtResource( 1 )
+finishedLevels = null
+
+[node name="Menu" type="VBoxContainer" parent="." index="0"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 120.0
+margin_top = 80.0
+margin_right = 1080.0
+margin_bottom = 820.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 1
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+alignment = 0
+
+[node name="Label" type="Label" parent="Menu" index="0"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_right = 960.0
+margin_bottom = 14.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 4
+text = "THIS IS A BIG TEST WHERE THE FUCK IS THE TEXT"
+align = 1
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+[node name="Logo" type="TextureRect" parent="Menu" index="1"]
+
+editor/display_folded = true
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 18.0
+margin_right = 960.0
+margin_bottom = 676.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 1
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 3
+stretch_mode = 4
+_sections_unfolded = [ "Margin" ]
+
+[node name="CenterContainer" type="CenterContainer" parent="Menu/Logo" index="0"]
+
+editor/display_folded = true
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -250.0
+margin_top = -250.0
+margin_right = 250.0
+margin_bottom = 250.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+use_top_left = false
+_sections_unfolded = [ "Focus", "Margin", "Rect", "Size Flags" ]
+
+[node name="MapSprite" type="Sprite" parent="Menu/Logo/CenterContainer" index="0"]
+
+position = Vector2( 250, 250 )
+scale = Vector2( 3.83196, 4.53618 )
+texture = ExtResource( 2 )
+_sections_unfolded = [ "Transform", "Z Index" ]
+
+[node name="CenterRow" type="HBoxContainer" parent="Menu" index="2"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 680.0
+margin_right = 960.0
+margin_bottom = 740.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 1
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+custom_constants/separation = 54
+alignment = 1
+_sections_unfolded = [ "custom_constants" ]
+
+[node name="BackButton2" parent="Menu/CenterRow" index="0" instance=ExtResource( 3 )]
+
+margin_left = 162.0
+margin_right = 222.0
+
+[node name="LeftButton" parent="Menu/CenterRow" index="1" instance=ExtResource( 4 )]
+
+margin_left = 276.0
+margin_right = 336.0
+
+[node name="PlayBUtton" parent="Menu/CenterRow" index="2" instance=ExtResource( 5 )]
+
+margin_left = 390.0
+margin_right = 570.0
+
+[node name="RightButton" parent="Menu/CenterRow" index="3" instance=ExtResource( 6 )]
+
+margin_left = 624.0
+margin_right = 684.0
+
+[node name="QuestionMark" parent="Menu/CenterRow" index="4" instance=ExtResource( 7 )]
+
+margin_left = 738.0
+margin_right = 798.0
+
+[node name="FadeIn" parent="." index="1" instance=ExtResource( 8 )]
+
+visible = false
+
+[connection signal="pressed" from="Menu/CenterRow/BackButton2" to="." method="_on_BackButton2_pressed"]
+
+[connection signal="pressed" from="Menu/CenterRow/LeftButton" to="." method="_on_LeftButton_pressed"]
+
+[connection signal="pressed" from="Menu/CenterRow/PlayBUtton" to="." method="_on_PlayBUtton_pressed"]
+
+[connection signal="pressed" from="Menu/CenterRow/RightButton" to="." method="_on_RightButton_pressed"]
+
+[connection signal="pressed" from="Menu/CenterRow/QuestionMark" to="." method="_on_QuestionMark_pressed"]
+
+
