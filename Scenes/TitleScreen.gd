@@ -2,26 +2,40 @@ extends Control
 
 var LEVEL_PATH = "res://Texture"
 var files = Array()
+var filteredFiles = Array()
+export(Array) var loadedLevels = global.allLevels #????
 
 func _ready():
 	loadsave()
-	filterLevels()
+	filteredFiles = filterLevels()
+	savegame.save_levels()
 
 func loadsave():
 	savegame.load_game()
 	settings.load_settings()
 	settings.refresh()
 	pass
-	
+
+func to_save():
+	global.allLevels = filterLevels()
+	return filteredFiles
 
 func filterLevels():
 	
-	for x in loadLevels().size():
-		if loadLevels().find(String(1.png)):
-	#	and !loadLevels().has(String(x)+".png"+".import"):
-			print (loadLevels()[x])
+	var levels = loadLevels()
+	var filteredLevels = Array()
 	
-	pass
+	for x in levels.size():
+		if singleLevelExtractionFacility(x, levels) != null:
+			filteredLevels.append(singleLevelExtractionFacility(x, levels))
+	return filteredLevels
+
+func singleLevelExtractionFacility(x, levels):
+	
+	for y in levels.size():
+		if levels[y] == String(x)+".png" \
+		and levels[y] != null:
+			return levels[y]
 
 func loadLevels():
 	
