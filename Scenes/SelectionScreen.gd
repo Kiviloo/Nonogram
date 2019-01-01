@@ -3,7 +3,7 @@ extends Control
 onready var labelLevel = get_node("Menu/Label")
 onready var logoSprite = get_node("Menu/Logo/CenterContainer/MapSprite")
 var levelNumber = 0
-var maxSprite = 9
+var maxSprite = 12
 
 export(Array) var finishedLevels = global.finishedLevels
 

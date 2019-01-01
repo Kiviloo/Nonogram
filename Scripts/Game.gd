@@ -1,16 +1,21 @@
 extends Node
 
 var pixelImageTexture = load(global.chosenLevelSprite)
+
+var pixelImageSize = Vector2(pixelImageTexture.get_width(), pixelImageTexture.get_height())
 var pixelAmount = pixelImageTexture.get_height() * pixelImageTexture.get_width()
 var pixelImage = pixelImageTexture.get_data()
 
 
+var screenSize = (Vector2(ProjectSettings.get_setting("display/window/size/width"), ProjectSettings.get_setting("display/window/size/height")))
+var screenMid = (Vector2(ProjectSettings.get_setting("display/window/size/width") / 2, ProjectSettings.get_setting("display/window/size/height") / 2))
+
 var pixelImageInst = load("res://Scenes/pixelSprite.tscn")
 var blockInst = load("res://Scenes/block.tscn")
 var wrongInst = load("res://Scenes/wrong.tscn")
+var wrongOwnInst = load("res://Scenes/wrongOwn.tscn")
 
-var topBannerInst = load("res://Scenes/topBanner.tscn")
-var botBannerInst = load("res://Scenes/botBanner.tscn")
+var bannerInst = load("res://Scenes/BannerBlock.tscn")
 
 var noTileInst = load("res://Scenes/noTile.tscn")
 
@@ -27,11 +32,26 @@ var labelGroupTop = 0
 
 var howManyBlocks = 0
 
+var tile = true
+
+var scale
+var bannerScale
+var maxBlockx
+var maxBlocky
+var imageTopLeft
+var imageTopLeftEdit
+var imageBotRight
+
+var wrongOwnArray = Array()
+var blocks = Array()
+
+
 onready var lifeLabel = get_node("World/LifeLabel")
 var lives = 3
 
 func _ready():
 
+	sizeBestimmung()
 	pixelImage.lock()
 	spawnBlocksLoop()
 	spawnImage()
@@ -41,35 +61,104 @@ func _ready():
 	createBlockArray()
 	countBlocks()
 	pass
-	
 
+
+func sizeBestimmung():
+	
+	var size = Vector2(pixelImageTexture.get_width(), pixelImageTexture.get_height())
+	self.pixelImageSize = size
+	
+	var tempScale
+	var tempBannerScale
+	var tempMaxBlockx
+	var tempMaxBlocky
+	
+	if size.x == 5:
+		
+		tempScale = 60
+		tempBannerScale = 6
+		tempMaxBlockx = 3
+		
+	if size.x == 10:
+		
+		tempScale = 40
+		tempBannerScale = 4
+		tempMaxBlockx = 5
+		
+	if size.x == 15:
+		tempScale = 30
+		tempBannerScale = 3
+		tempMaxBlockx = 8
+		pass
+	if size.x == 20:
+		pass
+	
+	if size.y == 5:
+		
+		tempMaxBlocky = 3
+		
+		pass
+	if size.y == 10:
+		
+		tempMaxBlocky = 5
+		
+		pass
+	if size.y == 15:
+		tempMaxBlocky = 8
+		pass
+	if size.y == 20:
+		pass
+	
+	self.scale = tempScale
+	self.bannerScale = tempBannerScale
+	self.maxBlockx = tempMaxBlockx
+	self.maxBlocky = tempMaxBlocky
+	self.imageTopLeft = Vector2(screenMid.x - ((pixelImageSize.x * scale) / 2), screenMid.y - ((pixelImageSize.y * scale) / 2))
+	self.imageTopLeftEdit = Vector2(screenMid.x - (pixelImageSize.x * scale) / 2 + scale / 2, screenMid.y - (pixelImageSize.y * scale) / 2 + scale / 2 )
+	self.imageBotRight = Vector2(screenMid.x + pixelImageTexture.get_width() * scale / 2, screenMid.y + pixelImageTexture.get_height() * scale / 2)
 
 func _input(event):
 	
 	if event is InputEventMouseButton \
 	and event.button_index == BUTTON_LEFT \
 	and event.is_pressed():
-		var whichPixel = Vector2(int((event.position.x - 450) / 60), int((event.position.y - 300) / 60))
-		
-		if pixelImage.get_pixel(whichPixel.x, whichPixel.y).a == 0:
+		if event.position.x < imageBotRight.x \
+		and event.position.x > imageTopLeft.x \
+		and event.position.y < imageBotRight.y \
+		and event.position.y > imageTopLeft.y:
 			
-			if !alreadyClickedWrong.has(whichPixel):
-				alreadyClickedWrong.append(whichPixel)
-				spawnWrong(480 + (whichPixel.x * 60), 330 + (whichPixel.y * 60))
-				lives = lives -1
-				lifeLabel.set_text("Lives: "+String(lives))
-				checkLose()
+			if tile == true:
+				var whichPixel = Vector2(int((event.position.x - imageTopLeft.x) / scale), int((event.position.y - imageTopLeft.y) / scale))
+				
+				removeBlock(whichPixel)
+				checkWrongOwn((imageTopLeft.x + scale /2) + (whichPixel.x * scale), (imageTopLeft.y + scale /2) + (whichPixel.y * scale),whichPixel, false)
+				var y = -1
+				for x in blocks:
+					y = y +1
 
-		elif pixelImage.get_pixel(whichPixel.x, whichPixel.y).a == 1:
-			if !alreadyClickedRight.has(whichPixel):
-				alreadyClickedRight.append(whichPixel)
-				checkGreysBot(alreadyClickedRight,whichPixel)
-				checkGreysTop(alreadyClickedRight,whichPixel)
-				checker(alreadyClickedRight)
 				
-				winwin()
+				if pixelImage.get_pixel(whichPixel.x, whichPixel.y).a == 0:
+			
+					if !alreadyClickedWrong.has(whichPixel):
+						alreadyClickedWrong.append(whichPixel)
+						spawnWrong((imageTopLeft.x + scale /2) + (whichPixel.x * scale), (imageTopLeft.y + scale /2) + (whichPixel.y * scale))
+						#spawnWrong(480 + (whichPixel.x * 60), 330 + (whichPixel.y * 60))
+						lives = lives -1
+						lifeLabel.set_text("Lives: "+String(lives))
+						checkLose()
+
+				elif pixelImage.get_pixel(whichPixel.x, whichPixel.y).a == 1:
+					if !alreadyClickedRight.has(whichPixel):
+						alreadyClickedRight.append(whichPixel)
+						checkGreysBot(alreadyClickedRight,whichPixel)
+						checkGreysTop(alreadyClickedRight,whichPixel)
+						checker(alreadyClickedRight)
+						winwin()
+			elif tile == false:
+				var whichPixel = Vector2(int((event.position.x - imageTopLeft.x) / scale), int((event.position.y - imageTopLeft.y) / scale))
 				
-				print (howManyBlocks, " ", alreadyClickedRight.size())
+				if checkWrongOwn((imageTopLeft.x + scale /2) + (whichPixel.x * scale), (imageTopLeft.y + scale /2) + (whichPixel.y * scale),whichPixel, true) == false:
+					spawnWrongOwn((imageTopLeft.x + scale /2) + (whichPixel.x * scale), (imageTopLeft.y + scale /2) + (whichPixel.y * scale))
 
 func checkLose():
 	if lives <= 0:
@@ -83,10 +172,8 @@ func countBlocks():
 
 func winwin():
 	if alreadyClickedRight.size() == howManyBlocks:
-		print ("WINWINWININ")
 		global.finishedLevels.append(global.chosenLevelNumber)
 		get_tree().change_scene('res://Scenes/SelectionScreen.tscn')
-
 
 func checkGreysTop(clicked, mousePosition):
 	var tempBlockArray = Array()
@@ -163,14 +250,10 @@ func checkGreysTop(clicked, mousePosition):
 						zaehler.queue_free()
 					labelGroupTop = 0
 					zaehlerTop()
-					print (tempBlockArray[number-1].x + beforeRowNumbers)
+#					print (tempBlockArray[number-1].x + beforeRowNumbers)
 			
 			cntBlack = 0
 			cntHit = 0
-
-	
-
-
 
 func checkGreysBot(clicked, mousePosition):
 	
@@ -253,7 +336,6 @@ func checkGreysBot(clicked, mousePosition):
 			
 			cntBlack = 0
 			cntHit = 0
-	
 
 func createBlockArray():
 	var x = pixelImage.get_width()
@@ -305,19 +387,19 @@ func checker(array):
 	if allCntY == realCntY:
 		columnComplete(arrayBack, 1)
 
-
 func columnComplete(where, toporbot):
 	var i = 0
 	
 	if toporbot == 0:
 		while (i < pixelImageTexture.get_width()):
 			if pixelImage.get_pixel(i, where.y).a == 0:
+				
 				var image = noTileInst.instance()
 				image.set_name("noTileHereSprite")
 				get_node("/root/Game/World/NoTiles").add_child(image)
-				image.set_scale(Vector2(12, 12))
-				image.set_position(Vector2(480 + (i * 60), 330 + (where.y * 60)))
-				
+				image.set_scale(Vector2(bannerScale*2, bannerScale*2))
+				#image.set_position(Vector2(480 + (i * 60), 330 + (where.y * 60)))
+				image.set_position(Vector2((imageTopLeft.x + scale / 2) + (i * scale), (imageTopLeft.y + scale / 2) + (where.y * scale)))
 				for block in get_tree().get_nodes_in_group("Y"+String(where.y)):
 					block.queue_free()
 			i = i + 1
@@ -328,12 +410,61 @@ func columnComplete(where, toporbot):
 				var image = noTileInst.instance()
 				image.set_name("noTileHereSprite")
 				get_node("/root/Game/World/NoTiles").add_child(image)
-				image.set_scale(Vector2(12, 12))
-				image.set_position(Vector2(480 + (where.x * 60), 330 + (i * 60)))
+				image.set_scale(Vector2(bannerScale*2, bannerScale*2))
+				image.set_position(Vector2((imageTopLeft.x + scale / 2) + (where.x * scale), (imageTopLeft.y + scale / 2) + (i * scale)))
+				#image.set_position(Vector2(480 + (where.x * 60), 330 + (i * 60)))
 				
 				for block in get_tree().get_nodes_in_group("X"+String(where.x)):
 					block.queue_free()
 			i=i+1
+
+func removeBlock(whichBlock):
+	
+	var counter = -1
+	var wr = weakref(blocks[0])
+	
+	for block in blocks:
+		counter = counter +1
+		wr = weakref(block)
+		if wr.get_ref():
+			if block.get_groups().has("X"+String(whichBlock.x)):
+				if block.get_groups().has("Y"+String(whichBlock.y)):
+					blocks.remove(counter)
+					block.queue_free()
+
+func checkWrongOwn(posx, posy, whichPixel, shouldSpawnBlock):
+	
+	var alreadyClicked = Array()
+	alreadyClicked = alreadyClickedRight + alreadyClickedWrong
+	
+	var counter = -1
+	if wrongOwnArray != null:
+		for x in wrongOwnArray:
+
+			counter = counter +1
+			if x.is_in_group("X"+String(posx)+" "+"Y"+String(posy)) \
+			and wrongOwnArray != null:
+				wrongOwnArray.remove(counter)
+				
+				if shouldSpawnBlock == true \
+				and !alreadyClicked.has(Vector2(whichPixel.x, whichPixel.y)):
+					spawnBlocks(posx, posy, whichPixel.x, whichPixel.y)
+				
+				x.queue_free()
+				return true
+	return false
+
+func spawnWrongOwn(posx, posy):
+	
+	var image = wrongOwnInst.instance()
+	image.set_name("wrongSpriteOwn")
+	get_node("/root/Game/World/WrongOwn").add_child(image)
+	
+	image.get_child(0).set_position(Vector2(posx, posy))
+	image.get_child(0).set_scale(Vector2(bannerScale*2, bannerScale*2))
+	
+	image.add_to_group("X"+String(posx)+" "+"Y"+String(posy))
+	wrongOwnArray.append(image)
 
 func spawnWrong(posx, posy):
 	
@@ -342,8 +473,7 @@ func spawnWrong(posx, posy):
 	get_node("/root/Game/World/Wrong").add_child(image)
 	
 	image.set_position(Vector2(posx, posy))
-	image.set_scale(Vector2(12, 12))
-
+	image.set_scale(Vector2(bannerScale*2, bannerScale*2))
 
 func spawnImage():
 	
@@ -351,11 +481,10 @@ func spawnImage():
 	image.set_name("pixelSprite")
 	get_node("/root/Game/World/PixelImage").add_child(image)
 	
-	image.set_position(Vector2(600, 450))
-	image.set_scale(Vector2(60, 60))
+	image.set_position(screenMid)
+	image.set_scale(Vector2(scale, scale))
 
-
-func spawnBlocks(posx, posy):
+func spawnBlocks(posx, posy, j, i):
 	
 	var block = blockInst.instance()
 	block.set_name("WrongImg")
@@ -363,11 +492,19 @@ func spawnBlocks(posx, posy):
 	
 	block.get_child(0).set_position(Vector2(posx, posy))
 	
-	var GrpNameX = "X"+String((posx/60)-8)
-	var GrpNameY = "Y"+String((posy/60)-5)
+	var blockScale = block.get_child(0)
+	blockScale.set_scale(Vector2(bannerScale * 2, bannerScale * 2))
+	
+	
+	var GrpNameX = "X"+String(j)
+	var GrpNameY = "Y" +String(i)
+	#var GrpNameX = "X"+String((posx/scale)-8)
+	#var GrpNameY = "Y"+String((posy/scale)-5.5)
 	
 	block.add_to_group(GrpNameX)
 	block.add_to_group(GrpNameY)
+	
+	blocks.append(block)
 
 
 func spawnBlocksLoop():
@@ -375,41 +512,52 @@ func spawnBlocksLoop():
 	var i = 0
 	var j = 0
 	
-	var posy = 270
+	var posy = imageTopLeftEdit.y - scale
 	
-	while(i<5):
-		posy = posy + 60
+	while(i<pixelImage.get_height()):
+		posy = posy + scale
 		j = 0
 		
-		while(j<5):
-			var posx = 480
-			posx = posx + 60 * j
-			spawnBlocks(posx, posy)
+		while(j<pixelImage.get_width()):
+			var posx = imageTopLeftEdit.x
+			posx = posx + scale * j
+			spawnBlocks(posx, posy, j, i)
 			j = j + 1
 		i = i + 1
-
 
 func spawnBanner():
 	
 	var i = 0
 	var j = 0
 	
-	while(i<5):
-		var topx = 480 + (i * 60)
-		var topy = 210
-		var topBanner = topBannerInst.instance()
-		get_node("/root/Game/World/Banner").add_child(topBanner)
-		topBanner.set_position(Vector2(topx, topy))
+	while(i<pixelImageTexture.get_width()):
+		while (j < maxBlocky):
+			
+			var top = Vector2(imageTopLeftEdit.x  + (scale * i), imageTopLeftEdit.y - scale  - (scale * j))
+			
+			var topBanner = bannerInst.instance()
+			get_node("/root/Game/World/Banner").add_child(topBanner)
+			topBanner.set_position(top)
+			topBanner.set_scale(Vector2(bannerScale, bannerScale))
+			j = j +1
+		j = 0
 		i = i + 1
-		 
-	while(j<5):
-		var botx = 360
-		var boty = 330 + (j * 60)
-		var botBanner = botBannerInst.instance()
-		get_node("/root/Game/World/Banner").add_child(botBanner)
-		botBanner.set_position(Vector2(botx, boty))
-		j = j + 1
-
+	
+	i = 0
+	j = 0
+	
+	while(i < pixelImageTexture.get_height()):
+		while (j < maxBlockx):
+			
+			var bot = Vector2(imageTopLeftEdit.x - scale - (scale * j), imageTopLeftEdit.y + (scale * i))
+			
+			var botBanner = bannerInst.instance()
+			get_node("/root/Game/World/Banner").add_child(botBanner)
+			botBanner.set_position(bot)
+			botBanner.set_scale(Vector2(bannerScale, bannerScale))
+			j = j +1
+		j = 0
+		i = i + 1
 
 func zaehlerBot():
 	var i = pixelImageTexture.get_width() - 1
@@ -471,7 +619,7 @@ func zaehlerTop():
 	
 	while(i < pixelImageTexture.get_width()):
 		while(j >= 0):
-			print (i,j)
+#			print (i,j)
 			if pixelImage.get_pixel(i, j).a == 1:
 				firstTime = true
 				howMany = howMany + 1
@@ -503,12 +651,11 @@ func zaehlerTop():
 	
 	if howMany != 0:
 		changeLabelTop(howMany, i, number,ort, toporbot)
-		print(howMany, " ", i, " ", number)
+#		print(howMany, " ", i, " ", number)
 		howMany = 0
 		ort = ort - 1
 		number = 0
 		firstTime = false
-
 
 func zaehler():
 	var i = pixelImageTexture.get_width() - 1
@@ -517,7 +664,7 @@ func zaehler():
 	var firstTime = true
 	var number = 0
 	var toporbot = 1
-	var ort = 2
+	var ort = maxBlockx - 1
 	
 	while(j<pixelImageTexture.get_height()):
 		while(i>=0):
@@ -610,14 +757,14 @@ func changeLabelBot(howMany, which, number, ort, toporbot):
 	
 	var label = Label.new()
 	var labelNode = Node2D.new()
-	var topPosx = 480
+	var topPosx = imageTopLeft.x
 	var topPosy = 150
-	var botPosx = 300
-	var botPosy = 330
+	var botPosx = imageTopLeft.x
+	var botPosy = imageTopLeft.y
 	
 	
-	botPosx = botPosx  + (60*ort)
-	botPosy = botPosy + (60*which)
+	botPosx = botPosx - scale / 2 + scale*ort - scale * 2 - scale/10
+	botPosy = botPosy + (scale*which) + scale/3
 	
 	labelNode.position = Vector2(botPosx, botPosy)
 	add_child(labelNode)
@@ -640,20 +787,22 @@ func changeLabelBot(howMany, which, number, ort, toporbot):
 			label.add_color_override("font_color", Color(0.2, 1.0, 0.7))
 #			print ("BotL"+String(greenNumber))
 
-
 func changeLabelTop(howMany, which, number, ort, toporbot):
 	
 	var label = Label.new()
 	var labelNode = Node2D.new()
-	var topPosx = 480
-	var topPosy = 150
+	var topPosx = imageTopLeft.x
+	var topPosy = imageTopLeft.y
 	var botPosx = 300
 	var botPosy = 330
 	#print (howMany, " ", which, " ",number, " ",ort, " ",toporbot)
 	
-	print ("woop")
-	topPosx = topPosx + (60*which)
-	topPosy = topPosy + (60*ort)
+#	print ("woop")
+	topPosx = topPosx + (scale*which) + scale/3
+	topPosy = topPosy - scale / 2 + scale*ort - scale * 2 - scale/10#topPosy + (60*ort)
+	
+	botPosx = botPosx - scale / 2 + scale*ort - scale * 2 - scale/10
+	botPosy = botPosy + (scale*which) + scale/3
 	
 	labelNode.position = Vector2(topPosx, topPosy)
 	add_child(labelNode)
@@ -674,3 +823,10 @@ func changeLabelTop(howMany, which, number, ort, toporbot):
 		if label.is_in_group("TopL"+String(greenNumber)):
 			label.add_color_override("font_color", Color(0.2, 1.0, 0.7))
 #			print ("BotL"+String(greenNumber))
+
+func _on_Right_RightButton():
+	tile = true
+
+
+func _on_Wrong_WrongButton():
+	tile = false

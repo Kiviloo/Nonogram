@@ -1,6 +1,16 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://Scripts/Game.gd" type="Script" id=1]
+[ext_resource path="res://TitleScreen/Buttons/Back_Button.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Scenes/Tile.gd" type="Script" id=3]
+[ext_resource path="res://Texture/select_right_selected.png" type="Texture" id=4]
+[ext_resource path="res://Scenes/Wrong.gd" type="Script" id=5]
+[ext_resource path="res://Texture/select_wrong.png" type="Texture" id=6]
+
+[sub_resource type="RectangleShape2D" id=1]
+
+custom_solver_bias = 0.0
+extents = Vector2( 28.8, 26.6667 )
 
 [node name="Game" type="Node"]
 
@@ -40,5 +50,78 @@ text = "Lives: 3"
 percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
+
+[node name="BackButton" parent="World" index="6" instance=ExtResource( 2 )]
+
+margin_left = 452.0
+margin_top = 961.0
+margin_right = 1412.0
+margin_bottom = 1021.0
+
+[node name="Buttons" type="Node" parent="World" index="7"]
+
+editor/display_folded = true
+
+[node name="Right" type="Area2D" parent="World/Buttons" index="0"]
+
+position = Vector2( 1584.13, 307.473 )
+scale = Vector2( 2.13007, 2.13007 )
+input_pickable = true
+gravity_vec = Vector2( 0, 1 )
+gravity = 98.0
+linear_damp = 0.1
+angular_damp = 1.0
+audio_bus_override = false
+audio_bus_name = "Master"
+script = ExtResource( 3 )
+_sections_unfolded = [ "Transform" ]
+
+[node name="Tile" type="Sprite" parent="World/Buttons/Right" index="0"]
+
+position = Vector2( -1.06665, -1.06665 )
+scale = Vector2( 5.63363, 5.63363 )
+texture = ExtResource( 4 )
+_sections_unfolded = [ "Transform" ]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/Buttons/Right" index="1"]
+
+visible = false
+shape = SubResource( 1 )
+
+[node name="Wrong" type="Area2D" parent="World/Buttons" index="1"]
+
+position = Vector2( 1579.59, 491.511 )
+scale = Vector2( 2.13007, 2.13007 )
+input_pickable = true
+gravity_vec = Vector2( 0, 1 )
+gravity = 98.0
+linear_damp = 0.1
+angular_damp = 1.0
+audio_bus_override = false
+audio_bus_name = "Master"
+script = ExtResource( 5 )
+_sections_unfolded = [ "Transform" ]
+
+[node name="Wrong" type="Sprite" parent="World/Buttons/Wrong" index="0"]
+
+position = Vector2( -1.06665, -1.06668 )
+scale = Vector2( 5.63363, 5.63363 )
+texture = ExtResource( 6 )
+_sections_unfolded = [ "Transform" ]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/Buttons/Wrong" index="1"]
+
+visible = false
+shape = SubResource( 1 )
+
+[node name="WrongOwn" type="Node" parent="World" index="8"]
+
+[connection signal="RightButton" from="World/Buttons/Right" to="." method="_on_Right_RightButton"]
+
+[connection signal="RightButton" from="World/Buttons/Right" to="World/Buttons/Wrong" method="_on_Right_RightButton"]
+
+[connection signal="WrongButton" from="World/Buttons/Wrong" to="." method="_on_Wrong_WrongButton"]
+
+[connection signal="WrongButton" from="World/Buttons/Wrong" to="World/Buttons/Right" method="_on_Wrong_WrongButton"]
 
 

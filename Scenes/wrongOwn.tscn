@@ -1,0 +1,41 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://Scenes/WrongOwn.gd" type="Script" id=1]
+[ext_resource path="res://Texture/wrong_own.png" type="Texture" id=2]
+
+[sub_resource type="RectangleShape2D" id=1]
+
+custom_solver_bias = 0.0
+extents = Vector2( 31.6457, 31.6667 )
+
+[node name="world" type="Node" index="0"]
+
+_sections_unfolded = [ "Pause" ]
+
+[node name="WrongOwn" type="Area2D" parent="." index="0"]
+
+z_index = 2
+input_pickable = true
+gravity_vec = Vector2( 0, 1 )
+gravity = 98.0
+linear_damp = 0.1
+angular_damp = 1.0
+audio_bus_override = false
+audio_bus_name = "Master"
+script = ExtResource( 1 )
+_sections_unfolded = [ "Transform", "Z Index" ]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WrongOwn" index="0"]
+
+position = Vector2( -0.00452736, -0.0030181 )
+scale = Vector2( 0.079315, 0.0789667 )
+shape = SubResource( 1 )
+_sections_unfolded = [ "Transform" ]
+
+[node name="SpriteBlock" type="Sprite" parent="WrongOwn" index="1"]
+
+z_index = 2
+texture = ExtResource( 2 )
+_sections_unfolded = [ "Transform", "Z Index" ]
+
+
