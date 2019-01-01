@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://TitleScreen/Buttons/Menu_Button.tscn" type="PackedScene" id=1]
+[ext_resource path="res://Editor/Buttons/20x20.gd" type="Script" id=2]
+
+[node name="20x20" index="0" instance=ExtResource( 1 )]
+
+script = ExtResource( 2 )
+
+[node name="Label" parent="." index="0"]
+
+text = "20x20"
+
+[connection signal="pressed" from="." to="." method="_on_20x20_pressed"]
+
+

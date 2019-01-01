@@ -60,8 +60,6 @@ margin_bottom = 1021.0
 
 [node name="Buttons" type="Node" parent="World" index="7"]
 
-editor/display_folded = true
-
 [node name="Right" type="Area2D" parent="World/Buttons" index="0"]
 
 position = Vector2( 1584.13, 307.473 )
@@ -116,12 +114,12 @@ shape = SubResource( 1 )
 
 [node name="WrongOwn" type="Node" parent="World" index="8"]
 
-[connection signal="RightButton" from="World/Buttons/Right" to="." method="_on_Right_RightButton"]
-
 [connection signal="RightButton" from="World/Buttons/Right" to="World/Buttons/Wrong" method="_on_Right_RightButton"]
 
-[connection signal="WrongButton" from="World/Buttons/Wrong" to="." method="_on_Wrong_WrongButton"]
+[connection signal="RightButton" from="World/Buttons/Right" to="." method="_on_Right_RightButton"]
 
 [connection signal="WrongButton" from="World/Buttons/Wrong" to="World/Buttons/Right" method="_on_Wrong_WrongButton"]
+
+[connection signal="WrongButton" from="World/Buttons/Wrong" to="." method="_on_Wrong_WrongButton"]
 
 

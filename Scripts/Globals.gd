@@ -5,3 +5,4 @@ var chosenLevelSprite = "woop"
 var chosenLevelNumber = 0
 var autosave = true
 var allLevels = Array()
+var size_selection

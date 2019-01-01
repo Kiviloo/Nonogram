@@ -13,8 +13,6 @@ func _ready():
 	
 	spawnImage()
 	autosave()
-	pass
-	print("Finished: ",global.finishedLevels)
 
 func autosave():
 	if global.autosave == true:

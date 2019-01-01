@@ -1,21 +1,22 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://Scenes/TitleScreen.gd" type="Script" id=1]
 [ext_resource path="res://Texture/logo.png" type="Texture" id=2]
 [ext_resource path="res://TitleScreen/Buttons/Play_Button.tscn" type="PackedScene" id=3]
 [ext_resource path="res://TitleScreen/Buttons/Credits_Button.tscn" type="PackedScene" id=4]
 [ext_resource path="res://TitleScreen/Buttons/Options_Button.tscn" type="PackedScene" id=5]
-[ext_resource path="res://TitleScreen/Buttons/Quit_Button.tscn" type="PackedScene" id=6]
-[ext_resource path="res://Texture/2.png" type="Texture" id=7]
-[ext_resource path="res://Fonts/Magnificent.ttf" type="DynamicFontData" id=8]
-[ext_resource path="res://Fades/FadeIn.tscn" type="PackedScene" id=9]
+[ext_resource path="res://TitleScreen/Buttons/Editor_Button.tscn" type="PackedScene" id=6]
+[ext_resource path="res://TitleScreen/Buttons/Quit_Button.tscn" type="PackedScene" id=7]
+[ext_resource path="res://Texture/2.png" type="Texture" id=8]
+[ext_resource path="res://Fonts/Magnificent.ttf" type="DynamicFontData" id=9]
+[ext_resource path="res://Fades/FadeIn.tscn" type="PackedScene" id=10]
 
 [sub_resource type="DynamicFont" id=1]
 
 size = 24
 use_mipmaps = true
 use_filter = true
-font_data = ExtResource( 8 )
+font_data = ExtResource( 9 )
 _sections_unfolded = [ "Font", "Settings" ]
 
 [node name="TitleScreen" type="Control" index="0" groups=[
@@ -80,7 +81,7 @@ anchor_right = 0.0
 anchor_bottom = 0.0
 margin_top = 204.0
 margin_right = 1720.0
-margin_bottom = 540.0
+margin_bottom = 584.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 1
@@ -96,7 +97,7 @@ anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_right = 360.0
-margin_bottom = 336.0
+margin_bottom = 380.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 1
@@ -109,27 +110,32 @@ _sections_unfolded = [ "custom_constants" ]
 
 [node name="PlayButton" parent="Menu/CenterRow/Buttons" index="0" instance=ExtResource( 3 )]
 
-margin_top = 18.0
 margin_right = 360.0
-margin_bottom = 78.0
+margin_bottom = 60.0
 
 [node name="Credits" parent="Menu/CenterRow/Buttons" index="1" instance=ExtResource( 4 )]
 
-margin_top = 98.0
+margin_top = 80.0
 margin_right = 360.0
-margin_bottom = 158.0
+margin_bottom = 140.0
 
 [node name="Options" parent="Menu/CenterRow/Buttons" index="2" instance=ExtResource( 5 )]
 
-margin_top = 178.0
+margin_top = 160.0
 margin_right = 360.0
-margin_bottom = 238.0
+margin_bottom = 220.0
 
-[node name="QuitButton" parent="Menu/CenterRow/Buttons" index="3" instance=ExtResource( 6 )]
+[node name="EditorButton" parent="Menu/CenterRow/Buttons" index="3" instance=ExtResource( 6 )]
 
-margin_top = 258.0
+margin_top = 240.0
 margin_right = 360.0
-margin_bottom = 318.0
+margin_bottom = 300.0
+
+[node name="QuitButton" parent="Menu/CenterRow/Buttons" index="4" instance=ExtResource( 7 )]
+
+margin_top = 320.0
+margin_right = 360.0
+margin_bottom = 380.0
 
 [node name="CenterContainer" type="CenterContainer" parent="Menu/CenterRow" index="1"]
 
@@ -140,7 +146,7 @@ anchor_right = 0.0
 anchor_bottom = 0.0
 margin_left = 364.0
 margin_right = 1720.0
-margin_bottom = 336.0
+margin_bottom = 380.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 0
@@ -157,16 +163,16 @@ anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_left = 675.0
-margin_top = 165.0
+margin_top = 187.0
 margin_right = 680.0
-margin_bottom = 170.0
+margin_bottom = 192.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 1
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
-texture = ExtResource( 7 )
+texture = ExtResource( 8 )
 stretch_mode = 0
 _sections_unfolded = [ "Rect" ]
 
@@ -193,7 +199,7 @@ lines_skipped = 0
 max_lines_visible = -1
 _sections_unfolded = [ "Size Flags", "Theme", "custom_fonts" ]
 
-[node name="FadeIn" parent="." index="1" instance=ExtResource( 9 )]
+[node name="FadeIn" parent="." index="1" instance=ExtResource( 10 )]
 
 visible = false
 

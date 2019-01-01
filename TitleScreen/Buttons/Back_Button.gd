@@ -18,3 +18,11 @@ func _ready():
 
 func _on_BackButton_pressed():
 	get_tree().change_scene('res://Scenes/TitleScreen.tscn')
+
+
+func _on_DrawButton_pressed():
+	pass # replace with function body
+
+
+func _on_EraserButton_pressed():
+	pass # replace with function body
