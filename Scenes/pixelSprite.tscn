@@ -3,7 +3,7 @@
 [ext_resource path="res://Texture/0.png" type="Texture" id=1]
 [ext_resource path="res://Scenes/pixelSprite.gd" type="Script" id=2]
 
-[node name="pixelSprite" type="Sprite" index="0"]
+[node name="pixelSprite" type="Sprite"]
 
 position = Vector2( 2.50492, 2.51823 )
 texture = ExtResource( 1 )

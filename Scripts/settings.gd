@@ -28,7 +28,6 @@ func save_settings():
 	for section in sets.keys():
 		for key in sets[section]:
 			_config_file.set_value(section, key, sets[section][key])
-			print (section, key, sets[section][key])
 	
 	_config_file.save(SAVE_PATH)
 	

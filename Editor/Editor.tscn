@@ -10,9 +10,12 @@
 [ext_resource path="res://TitleScreen/Buttons/Back_Button.tscn" type="PackedScene" id=8]
 [ext_resource path="res://Editor/Buttons/Save_Button.tscn" type="PackedScene" id=9]
 
-[node name="World" type="Node" index="0"]
+[node name="World" type="Node" groups=[
+"custom_levels",
+]]
 
 script = ExtResource( 1 )
+level_information = null
 
 [node name="GridTiles" type="Node" parent="." index="0"]
 
@@ -88,17 +91,17 @@ margin_bottom = 975.0
 
 [node name="Blocks" type="Node" parent="." index="2"]
 
-[connection signal="pressed" from="Button/DrawButton" to="." method="_on_DrawButton_pressed"]
+[connection signal="pressed" from="Button/DrawButton" to="Button/EraserButton" method="_on_DrawButton_pressed"]
 
 [connection signal="pressed" from="Button/DrawButton" to="Button/DrawButton" method="_on_DrawButton_pressed"]
 
-[connection signal="pressed" from="Button/DrawButton" to="Button/EraserButton" method="_on_DrawButton_pressed"]
+[connection signal="pressed" from="Button/DrawButton" to="." method="_on_DrawButton_pressed"]
 
-[connection signal="pressed" from="Button/EraserButton" to="." method="_on_EraserButton_pressed"]
+[connection signal="pressed" from="Button/EraserButton" to="Button/EraserButton" method="_on_EraserButton_pressed"]
 
 [connection signal="pressed" from="Button/EraserButton" to="Button/DrawButton" method="_on_EraserButton_pressed"]
 
-[connection signal="pressed" from="Button/EraserButton" to="Button/EraserButton" method="_on_EraserButton_pressed"]
+[connection signal="pressed" from="Button/EraserButton" to="." method="_on_EraserButton_pressed"]
 
 [connection signal="pressed" from="Button/SaveButton" to="." method="_on_SaveButton_pressed"]
 

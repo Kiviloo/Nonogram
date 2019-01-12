@@ -3,7 +3,7 @@ extends Control
 onready var labelLevel = get_node("Menu/Label")
 onready var logoSprite = get_node("Menu/Logo/CenterContainer/MapSprite")
 var levelNumber = 0
-var maxSprite = global.allLevels.size() -1
+var maxSprite =  global.allLevels.size() -1 + global.customLevelNumber +1
 
 export(Array) var finishedLevels = global.finishedLevels
 
@@ -29,24 +29,44 @@ func spawnImage():
 
 	for x in global.finishedLevels.size():
 		done.append(int(global.finishedLevels[x]))
-	
-	if done.has(levelNumber):
-		spriteString = String("res://Texture/"+String(levelNumber)+".png")
-		var pixelImageTexture = load(spriteString)
-		logoSprite.set_texture(pixelImageTexture)
-		logoSprite.set_scale(Vector2(60, 60))
+
+	print (levelNumber)
+	if levelNumber > global.allLevels.size() - 1:
+		if done.has(levelNumber):
+			var imageTexture = customlevel.create_custom_level(levelNumber)
+		
+			logoSprite.set_texture(imageTexture)
+			logoSprite.set_scale(Vector2(60, 60))
+		
+			global.customyesorno = true
+			global.imageTexture = imageTexture
+		else:
+			var imageTexture = customlevel.create_custom_level(levelNumber)
+			spriteString = String("res://Texture/"+String(levelNumber)+".png")
+			var pixelImageTexture = load(unknownSprite)
+			logoSprite.set_texture(pixelImageTexture)
+			logoSprite.set_scale(Vector2(60, 60))
+			global.customyesorno = true
+			global.imageTexture = imageTexture
 	else:
-		spriteString = String("res://Texture/"+String(levelNumber)+".png")
-		var pixelImageTexture = load(unknownSprite)
-		logoSprite.set_texture(pixelImageTexture)
-		logoSprite.set_scale(Vector2(60, 60))
+		if done.has(levelNumber):
+			spriteString = String("res://Texture/"+String(levelNumber)+".png")
+			var pixelImageTexture = load(spriteString)
+			logoSprite.set_texture(pixelImageTexture)
+			logoSprite.set_scale(Vector2(60, 60))
+		else:
+			spriteString = String("res://Texture/"+String(levelNumber)+".png")
+			var pixelImageTexture = load(unknownSprite)
+			logoSprite.set_texture(pixelImageTexture)
+			logoSprite.set_scale(Vector2(60, 60))
+			
+		global.chosenLevelSprite = spriteString
+		global.customyesorno = false
 	
-	global.chosenLevelSprite = spriteString
 	global.chosenLevelNumber = levelNumber
 	
 	labelLevel.set_text("Level: "+String(levelNumber))
 	
-	print (levelNumber)
 
 func _on_LeftButton_pressed():
 	

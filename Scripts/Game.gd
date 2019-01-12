@@ -1,10 +1,10 @@
 extends Node
 
-var pixelImageTexture = load(global.chosenLevelSprite)
+var pixelImageTexture
 
-var pixelImageSize = Vector2(pixelImageTexture.get_width(), pixelImageTexture.get_height())
-var pixelAmount = pixelImageTexture.get_height() * pixelImageTexture.get_width()
-var pixelImage = pixelImageTexture.get_data()
+var pixelImageSize
+var pixelAmount
+var pixelImage
 
 
 var screenSize = (Vector2(ProjectSettings.get_setting("display/window/size/width"), ProjectSettings.get_setting("display/window/size/height")))
@@ -50,7 +50,8 @@ onready var lifeLabel = get_node("World/LifeLabel")
 var lives = 3
 
 func _ready():
-
+	
+	setTexture()
 	sizeBestimmung()
 	pixelImage.lock()
 	spawnBlocksLoop()
@@ -63,10 +64,23 @@ func _ready():
 	pass
 
 
+func setTexture():
+	if global.customyesorno == false:
+		pixelImageTexture = load(global.chosenLevelSprite)
+	else:
+		pixelImageTexture = global.imageTexture
+	pass
+
+
 func sizeBestimmung():
+	
+	pixelImageSize = Vector2(pixelImageTexture.get_width(), pixelImageTexture.get_height())
+	pixelAmount = pixelImageTexture.get_height() * pixelImageTexture.get_width()
+	pixelImage = pixelImageTexture.get_data()
 	
 	var size = Vector2(pixelImageTexture.get_width(), pixelImageTexture.get_height())
 	self.pixelImageSize = size
+	print (size)
 	
 	var tempScale
 	var tempBannerScale
@@ -81,16 +95,19 @@ func sizeBestimmung():
 		
 	if size.x == 10:
 		
-		tempScale = 40
-		tempBannerScale = 4
+		tempScale = 50
+		tempBannerScale = 5
 		tempMaxBlockx = 5
 		
 	if size.x == 15:
-		tempScale = 30
-		tempBannerScale = 3
+		tempScale = 35
+		tempBannerScale = 3.5
 		tempMaxBlockx = 8
 		pass
 	if size.x == 20:
+		tempScale = 25
+		tempBannerScale = 2.5
+		tempMaxBlockx = 10
 		pass
 	
 	if size.y == 5:
@@ -107,8 +124,9 @@ func sizeBestimmung():
 		tempMaxBlocky = 8
 		pass
 	if size.y == 20:
+		tempMaxBlocky = 10
 		pass
-	
+		
 	self.scale = tempScale
 	self.bannerScale = tempBannerScale
 	self.maxBlockx = tempMaxBlockx
@@ -172,7 +190,8 @@ func countBlocks():
 
 func winwin():
 	if alreadyClickedRight.size() == howManyBlocks:
-		global.finishedLevels.append(global.chosenLevelNumber)
+		if !global.finishedLevels.has(global.chosenLevelNumber):
+			global.finishedLevels.append(global.chosenLevelNumber)
 		get_tree().change_scene('res://Scenes/SelectionScreen.tscn')
 
 func checkGreysTop(clicked, mousePosition):

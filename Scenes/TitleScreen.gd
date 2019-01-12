@@ -9,6 +9,9 @@ func _ready():
 	loadsave()
 	filteredFiles = filterLevels()
 	savegame.save_levels()
+	global.allLevels = filteredFiles
+	loadedLevels = filteredFiles
+	savegame.load_custom_levels()
 
 
 func loadsave():
@@ -33,8 +36,10 @@ func filterLevels():
 
 func singleLevelExtractionFacility(x, levels):
 	
+#	print("LEVELS: ", String(x),".png")
+	
 	for y in levels.size():
-		if levels[y] == String(x)+".png" \
+		if levels[y] == String(x)+".png.import" \
 		and levels[y] != null:
 			return levels[y]
 
@@ -53,5 +58,4 @@ func loadLevels():
 			
 	
 	dir.list_dir_end()
-	
 	return files

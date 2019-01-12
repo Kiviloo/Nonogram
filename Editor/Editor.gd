@@ -21,6 +21,12 @@ var blocks = Array()
 
 var img = Image.new()
 
+export(Dictionary) var level_information = {
+	"0": [null],
+	}
+
+var customLevelNumber = -1
+
 func _ready():
 	
 	sizeBestimmung()
@@ -29,8 +35,8 @@ func _ready():
 
 func _input(event):
 	
-	var tempImageBotRight = Vector2(imageBotRight.x -30, imageBotRight.y+30)
-	var tempImageTopLeft = Vector2(imageTopLeft.x -30, imageTopLeft.y + 30)
+	var tempImageBotRight = Vector2(imageBotRight.x - scale / 2, imageBotRight.y+ scale / 2)
+	var tempImageTopLeft = Vector2(imageTopLeft.x - scale / 2, imageTopLeft.y + scale / 2)
 	
 	if event is InputEventMouseButton \
 	and event.button_index == BUTTON_LEFT \
@@ -40,7 +46,6 @@ func _input(event):
 		and event.position.y < tempImageBotRight.y\
 		and event.position.y > tempImageTopLeft.y:
 			var whichPixel = Vector2(int((event.position.x - tempImageTopLeft.x) / scale), int((event.position.y - tempImageTopLeft.y) / scale))
-			print("WP: ", whichPixel)
 			
 			if drawOrerase == true:
 				spawnBlock(whichPixel.x, whichPixel.y)
@@ -49,34 +54,36 @@ func _input(event):
 				eraseBlock(whichPixel.x, whichPixel.y)
 				delete_from_array(whichPixel)
 
-func save_image():
-	
-	img.save_png("res://Texture/"+String(global.allLevels.size())+".png")
-	img.load("res://Texture/"+String(global.allLevels.size())+".png")
+func to_save():
+	return level_information
 
-func array_to_pixel():
+func save_image():
+
+	level_information = global.custom_level_information
+	customLevelNumber = global.customLevelNumber
+	customLevelNumber = customLevelNumber +1
+
+	level_information[String(customLevelNumber)] = imageArray
+
+	global.customLevelNumber = customLevelNumber
+	global.custom_level_information = level_information
+	savegame.save_custom_levels()
 	
-	img.create(size, size, false, Image.FORMAT_RGBA8)
-	img.lock()
+	refresh()
+
+func refresh():
+	imageArray = setArray()
 	
-	for x in size:
-		for y in size:
-			if imageArray[x][y] == 0:
-				img.set_pixel(x,y, Color(0, 0, 0, 1))
-			else:
-				img.set_pixel(x,y, Color(0, 0, 0, 0))
-	
-	img.unlock()
+	for block in get_tree().get_nodes_in_group("editor_block"):
+		block.queue_free()
 
 func delete_from_array(whichPixel):
 	
 	imageArray[whichPixel.y][whichPixel.x]=0
-	print (imageArray)
 
 func add_to_array(whichPixel):
 	
 	imageArray[whichPixel.y][whichPixel.x]=1
-	print (imageArray)
 
 func eraseBlock(posx, posy):
 	
@@ -93,10 +100,11 @@ func spawnBlock(posx, posy):
 	block.set_name("Block")
 	get_node("/root/World/Blocks").add_child(block)
 	
-	block.set_position(Vector2((imageTopLeft.x + scale /2) + (posx * scale) -30, (imageTopLeft.y + scale /2) + (posy * scale)+30))
+	block.set_position(Vector2((imageTopLeft.x + scale /2) + (posx * scale) - scale/2 , (imageTopLeft.y + scale /2) + (posy * scale) + scale / 2))
 	block.set_scale(Vector2(scale, scale))
 	
 	block.add_to_group("X"+String(posx)+" "+"Y"+String(posy))
+	block.add_to_group("editor_block")
 	blocks.append(block)
 
 func setArray():
@@ -158,5 +166,4 @@ func _on_EraserButton_pressed():
 
 
 func _on_SaveButton_pressed():
-	array_to_pixel()
 	save_image()

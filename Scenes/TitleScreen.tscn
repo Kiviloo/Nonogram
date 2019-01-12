@@ -192,7 +192,7 @@ mouse_default_cursor_shape = 0
 size_flags_horizontal = 3
 size_flags_vertical = 10
 custom_fonts/font = SubResource( 1 )
-text = "Version 0.1
+text = "Version 0.2
 Vapo"
 percent_visible = 1.0
 lines_skipped = 0
